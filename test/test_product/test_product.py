@@ -10,7 +10,7 @@ def test_add_to_cart(catalog_page):
     with allure.step('Получаем рандомную карточку и элементы внутри карточки'):
         card = catalog_page.random_product()
         btn_add_to_card = catalog_page.get_btn_add_to_cart(card)
-        title_attr_format = catalog_page.get_tittle_product(card).innder_text().lower().replace(' ', '-')
+        title_attr_format = catalog_page.get_title_product(card).innder_text().lower().replace(' ', '-')
     with allure.step('Собираем атрибуты кнопок'):
         attribute_btn_add = f'add-to-cart-{title_attr_format}'
         attribute_btn_remove = f'remove-{title_attr_format}'
@@ -29,7 +29,7 @@ def test_remove_from_cart(catalog_page):
     with allure.step('Получаем рандомную карточку и элементы внутри карточки'):
         card = catalog_page.random_product()
         btn_add_to_card = catalog_page.get_btn_add_to_cart(card)
-        title_attr_format = catalog_page.get_tittle_product(card).innder_text().lower().replace(' ', '-')
+        title_attr_format = catalog_page.get_title_product(card).innder_text().lower().replace(' ', '-')
     with allure.step('Собираем атрибуты кнопок'):
         attribute_btn_add = f'add-to-cart-{title_attr_format}'
         attribute_btn_remove = f'remove-{title_attr_format}'
@@ -51,7 +51,7 @@ def test_open_detail_product_page_by_click_title(catalog_page, detail_product_pa
     with allure.step('Получаем рандомную карточку и элементы внутри карточки'):
         card = catalog_page.random_product()
         link_title = catalog_page.get_link_title(card)
-        title = catalog_page.get_tittle_product(card).inner_text()
+        title = catalog_page.get_title_product(card).inner_text()
         price = catalog_page.get_price_products(card).inner_text()
         description = catalog_page.get_description_products(card).inner_text()
 
@@ -64,7 +64,7 @@ def test_open_detail_product_page_by_click_title(catalog_page, detail_product_pa
         attach_allure_text('list nums(id)', str(id_product))
 
     with allure.step('Кликаем на название'):
-        catalog_page.click_tittle_product(link_title)
+        catalog_page.click_title_product(link_title)
 
     with allure.step('Проверяем, что url соответствует'):
         assert_equal_str(catalog_page.page.url, f'https://www.saucedemo.com/inventory-item.html?id={''.join(id_product)}')
@@ -78,4 +78,20 @@ def test_open_detail_product_page_by_click_title(catalog_page, detail_product_pa
         assert title == detail_title
         assert price == detail_price
         assert description == detail_desc
+
+def test_sort_name_z_to_a(catalog_page):
+    catalog_page.open_catalog_page()
+    with allure.step('Получаем список названий карточек и сортируем его'):
+        old_sort_title = catalog_page.get_list_title_products()
+    with allure.step('Сортируем список от Z до A(по убыванию)'):
+        catalog_page.select_sort('za')
+        new_sort_title = catalog_page.get_list_title_products()
+    with allure.step('Проверяем, что старая сортировка != новой)'):
+        assert old_sort_title != new_sort_title
+        assert sorted(old_sort_title, reverse=True) == new_sort_title
+
+
+
+
+
 

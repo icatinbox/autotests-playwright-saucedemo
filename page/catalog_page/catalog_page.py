@@ -28,7 +28,7 @@ class CatalogPage(BasePage):
             return random_product
 
     @staticmethod
-    def get_tittle_product(card):
+    def get_title_product(card):
         with allure.step("Получение названия продукта"):
             title = card.locator('[data-test="inventory-item-name"]')
             attach_allure_text('title', str(title))
@@ -54,7 +54,7 @@ class CatalogPage(BasePage):
     def remove_from_cart(self, btn_remove):
         self.click(btn_remove)
 
-    def click_tittle_product(self, title):
+    def click_title_product(self, title):
         self.click(title)
 
     @staticmethod
@@ -68,3 +68,13 @@ class CatalogPage(BasePage):
     @staticmethod
     def get_description_products(card):
         return card.locator('[data-test="inventory-item-desc"]')
+
+    def select_sort(self, option):
+        self.locator('[data-test="product-sort-container"]').select_option(value=option)
+
+    def get_list_title_products(self):
+        cards_locator = self.get_products_card()
+        return [
+             self.get_title_product(cards_locator.nth(i)).inner_text()
+            for i in range(cards_locator.count())
+        ]
