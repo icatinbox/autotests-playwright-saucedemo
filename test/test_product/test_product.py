@@ -81,17 +81,51 @@ def test_open_detail_product_page_by_click_title(catalog_page, detail_product_pa
 
 def test_sort_name_z_to_a(catalog_page):
     catalog_page.open_catalog_page()
-    with allure.step('Получаем список названий карточек и сортируем его'):
-        old_sort_title = catalog_page.get_list_title_products()
+    with allure.step('Получаем список названий карточек'):
+        old_sort_titles = catalog_page.get_list_title_products()
     with allure.step('Сортируем список от Z до A(по убыванию)'):
         catalog_page.select_sort('za')
-        new_sort_title = catalog_page.get_list_title_products()
+        new_sort_titles = catalog_page.get_list_title_products()
+    with allure.step('Проверяем, что выбрано значение z-a в селекте'):
+        assert catalog_page.get_active_select().inner_text() == 'Name (Z to A)'
     with allure.step('Проверяем, что старая сортировка != новой)'):
-        assert old_sort_title != new_sort_title
-        assert sorted(old_sort_title, reverse=True) == new_sort_title
+        assert old_sort_titles != new_sort_titles
+        assert sorted(old_sort_titles, reverse=True) == new_sort_titles
 
+def test_default_sort_name_a_to_z(catalog_page):
+    catalog_page.open_catalog_page()
+    with allure.step('Получаем список названий карточек'):
+        titles = catalog_page.get_list_title_products()
+    with allure.step('Проверяем, что по умолчанию выбрано значение a-z в селекте'):
+        assert catalog_page.get_active_select().inner_text() == 'Name (A to Z)'
+    with allure.step('Проверяем, что сортировка по умолчанию a-z)'):
+        assert titles == sorted(titles)
 
+def test_sort_price_l_to_h(catalog_page):
+    catalog_page.open_catalog_page()
+    with allure.step('Получаем список цен карточек'):
+        old_sort_price = catalog_page.get_price_title_products()
+    with allure.step('Сортируем список по цене от low до high(по убыванию)'):
+        catalog_page.select_sort('lohi')
+    with allure.step('Проверяем, что выбрано значение low-high в селекте'):
+        assert catalog_page.get_active_select().inner_text() == 'Price (low to high)'
+    with allure.step('Проверяем, что старая сортировка != новой)'):
+        new_sort_price = catalog_page.get_price_title_products()
+        assert old_sort_price != new_sort_price
+        assert sorted(old_sort_price) == new_sort_price
 
+def test_sort_price_h_to_l(catalog_page):
+    catalog_page.open_catalog_page()
+    with allure.step('Получаем список цен карточек'):
+        old_sort_price = catalog_page.get_price_title_products()
+    with allure.step('Сортируем список по цене от high до low(по убыванию)'):
+        catalog_page.select_sort('hilo')
+    with allure.step('Проверяем, что выбрано значение high-low в селекте'):
+        assert catalog_page.get_active_select().inner_text() == 'Price (high to low)'
+    with allure.step('Проверяем, что старая сортировка != новой)'):
+        new_sort_price = catalog_page.get_price_title_products()
+        assert old_sort_price != new_sort_price
+        assert sorted(old_sort_price, reverse=True) == new_sort_price
 
 
 

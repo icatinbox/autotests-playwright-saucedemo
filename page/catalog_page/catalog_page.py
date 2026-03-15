@@ -78,3 +78,13 @@ class CatalogPage(BasePage):
              self.get_title_product(cards_locator.nth(i)).inner_text()
             for i in range(cards_locator.count())
         ]
+
+    def get_active_select(self):
+        return self.locator('.select_container .active_option')
+
+    def get_price_title_products(self):
+        cards_locator = self.get_products_card()
+        return [
+             float(self.get_price_products(cards_locator.nth(i)).inner_text().replace('$', ''))
+            for i in range(cards_locator.count())
+        ]
