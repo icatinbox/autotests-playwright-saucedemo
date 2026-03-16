@@ -3,7 +3,7 @@ from playwright.sync_api import Page
 
 class LoginPage(BasePage):
     def __init__(self, page: Page):
-        super(LoginPage, self).__init__(page)
+        super().__init__(page)
 
     def open_login_page(self):
         self.open()

@@ -10,7 +10,7 @@ from utils.utils import attach_allure_text
 
 class CatalogPage(BasePage):
     def __init__(self, page):
-        super(CatalogPage, self).__init__(page)
+        super().__init__(page)
 
     def open_catalog_page(self):
         self.open('/inventory.html')
@@ -82,9 +82,12 @@ class CatalogPage(BasePage):
     def get_active_select(self):
         return self.locator('.select_container .active_option')
 
-    def get_price_title_products(self):
+    def get_price_list_products(self):
         cards_locator = self.get_products_card()
         return [
              float(self.get_price_products(cards_locator.nth(i)).inner_text().replace('$', ''))
             for i in range(cards_locator.count())
         ]
+
+    def get_badge_count_cart(self):
+         return self.locator('.shopping_cart_container .shopping_cart_badge')

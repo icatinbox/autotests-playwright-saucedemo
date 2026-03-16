@@ -5,12 +5,15 @@ from page.assertation.assertation import assert_equal_str
 from utils.utils import attach_allure_text
 
 
-def test_add_to_cart(catalog_page):
+def test_add_to_cart(catalog_page, cart_page):
     catalog_page.open_catalog_page()
     with allure.step('Получаем рандомную карточку и элементы внутри карточки'):
         card = catalog_page.random_product()
         btn_add_to_card = catalog_page.get_btn_add_to_cart(card)
-        title_attr_format = catalog_page.get_title_product(card).innder_text().lower().replace(' ', '-')
+        title = catalog_page.get_title_product(card).inner_text()
+        description = catalog_page.get_description_products(card).inner_text()
+        price = catalog_page.get_price_products(card).inner_text()
+        title_attr_format = title.lower().replace(' ', '-')
     with allure.step('Собираем атрибуты кнопок'):
         attribute_btn_add = f'add-to-cart-{title_attr_format}'
         attribute_btn_remove = f'remove-{title_attr_format}'
@@ -20,16 +23,25 @@ def test_add_to_cart(catalog_page):
         expect(btn_add_to_card).to_have_attribute('name', attribute_btn_add)
     with allure.step('Клик на кнопку add to cart'):
         catalog_page.add_to_cart(btn_add_to_card)
+    with allure.step('Проверяем, что у иконки корзины появился каунтер'):
+        badge = catalog_page.get_badge_count_cart()
+        expect(badge).to_be_visible()
+        assert badge.inner_text() == '1'
     with allure.step('Проверяем, что кнопка remove содержит атрибут name'):
         btn_remove = catalog_page.get_btn_remove_from_cart(card)
         expect(btn_remove).to_have_attribute('name', attribute_btn_remove)
+    with allure.step('Проверяем, что предмет отображается в корзине'):
+        cart_page.open_cart()
+        assert cart_page.get_title() == title
+        assert cart_page.get_description() == description
+        assert cart_page.get_price() == price
 
 def test_remove_from_cart(catalog_page):
     catalog_page.open_catalog_page()
     with allure.step('Получаем рандомную карточку и элементы внутри карточки'):
         card = catalog_page.random_product()
         btn_add_to_card = catalog_page.get_btn_add_to_cart(card)
-        title_attr_format = catalog_page.get_title_product(card).innder_text().lower().replace(' ', '-')
+        title_attr_format = catalog_page.get_title_product(card).inner_text().lower().replace(' ', '-')
     with allure.step('Собираем атрибуты кнопок'):
         attribute_btn_add = f'add-to-cart-{title_attr_format}'
         attribute_btn_remove = f'remove-{title_attr_format}'
@@ -39,12 +51,19 @@ def test_remove_from_cart(catalog_page):
         expect(btn_add_to_card).to_have_attribute('name', attribute_btn_add)
     with allure.step('Клик на кнопку add to cart'):
         catalog_page.add_to_cart(btn_add_to_card)
+    with allure.step('Проверяем, что у иконки корзины появился каунтер'):
+        badge = catalog_page.get_badge_count_cart()
+        expect(badge).to_be_visible()
+        assert badge.inner_text() == '1'
     with allure.step('Проверяем, что кнопка remove содержит атрибут name'):
         btn_remove = catalog_page.get_btn_remove_from_cart(card)
         expect(btn_remove).to_have_attribute('name', attribute_btn_remove)
     with allure.step('Клик на кнопку remove'):
         catalog_page.remove_from_cart(btn_remove)
         expect(btn_add_to_card).to_have_attribute('name', attribute_btn_add)
+    with allure.step('Проверяем, что у иконки корзины пропал каунтер'):
+        badge = catalog_page.get_badge_count_cart()
+        expect(badge).not_to_be_visible()
 
 def test_open_detail_product_page_by_click_title(catalog_page, detail_product_page):
     catalog_page.open_catalog_page()
@@ -104,26 +123,26 @@ def test_default_sort_name_a_to_z(catalog_page):
 def test_sort_price_l_to_h(catalog_page):
     catalog_page.open_catalog_page()
     with allure.step('Получаем список цен карточек'):
-        old_sort_price = catalog_page.get_price_title_products()
+        old_sort_price = catalog_page.get_price_list_products()
     with allure.step('Сортируем список по цене от low до high(по убыванию)'):
         catalog_page.select_sort('lohi')
     with allure.step('Проверяем, что выбрано значение low-high в селекте'):
         assert catalog_page.get_active_select().inner_text() == 'Price (low to high)'
     with allure.step('Проверяем, что старая сортировка != новой)'):
-        new_sort_price = catalog_page.get_price_title_products()
+        new_sort_price = catalog_page.get_price_list_products()
         assert old_sort_price != new_sort_price
         assert sorted(old_sort_price) == new_sort_price
 
 def test_sort_price_h_to_l(catalog_page):
     catalog_page.open_catalog_page()
     with allure.step('Получаем список цен карточек'):
-        old_sort_price = catalog_page.get_price_title_products()
+        old_sort_price = catalog_page.get_price_list_products()
     with allure.step('Сортируем список по цене от high до low(по убыванию)'):
         catalog_page.select_sort('hilo')
     with allure.step('Проверяем, что выбрано значение high-low в селекте'):
         assert catalog_page.get_active_select().inner_text() == 'Price (high to low)'
     with allure.step('Проверяем, что старая сортировка != новой)'):
-        new_sort_price = catalog_page.get_price_title_products()
+        new_sort_price = catalog_page.get_price_list_products()
         assert old_sort_price != new_sort_price
         assert sorted(old_sort_price, reverse=True) == new_sort_price
 
