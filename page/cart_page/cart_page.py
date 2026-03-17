@@ -23,17 +23,23 @@ class CartPage(BasePage):
     def click_btn_checkout(self):
         self.click(self.locator('[data-test="checkout"]'))
 
+    def get_input_first_name(self):
+        return self.locator('[data-test="firstName"]')
+
     def fill_first_name(self, value):
-        input_first_name = self.locator('[data-test="firstName"]')
-        self.fill(input_first_name, value)
+        self.fill(self.get_input_first_name(), value)
+
+    def get_input_last_name(self):
+        return self.locator('[data-test="lastName"]')
 
     def fill_last_name(self, value):
-        input_last_name = self.locator('[data-test="lastName"]')
-        self.fill(input_last_name, value)
+        self.fill(self.get_input_last_name(), value)
+
+    def get_input_postal_code(self):
+        return self.locator('[data-test="postalCode"]')
 
     def fill_postal_code(self, value):
-        input_postal_code = self.locator('[data-test="postalCode"]')
-        self.fill(input_postal_code, value)
+        self.fill(self.get_input_postal_code(), value)
 
     def click_btn_continue(self):
         self.click(self.locator('[data-test="continue"]'))
@@ -46,3 +52,9 @@ class CartPage(BasePage):
 
     def get_complete_description(self):
         return self.locator('[data-test="complete-text"]').inner_text()
+
+    def get_error_message(self):
+        return self.locator('.error-message-container [data-test="error"]').inner_text()
+
+    def click_btn_cancel(self):
+        self.click(self.get_by_role('button', name='cancel'))
