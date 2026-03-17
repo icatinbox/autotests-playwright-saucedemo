@@ -26,15 +26,15 @@ def test_add_to_cart(catalog_page, cart_page):
     with allure.step('Проверяем, что у иконки корзины появился каунтер'):
         badge = catalog_page.get_badge_count_cart()
         expect(badge).to_be_visible()
-        assert badge.inner_text() == '1'
+        assert_equal_str('1', badge.inner_text())
     with allure.step('Проверяем, что кнопка remove содержит атрибут name'):
         btn_remove = catalog_page.get_btn_remove_from_cart(card)
         expect(btn_remove).to_have_attribute('name', attribute_btn_remove)
     with allure.step('Проверяем, что предмет отображается в корзине'):
         cart_page.open_cart()
-        assert cart_page.get_title() == title
-        assert cart_page.get_description() == description
-        assert cart_page.get_price() == price
+        assert_equal_str(cart_page.get_title(), title)
+        assert_equal_str(cart_page.get_description(), description)
+        assert_equal_str(cart_page.get_price(), price)
 
 def test_remove_from_cart(catalog_page):
     catalog_page.open_catalog_page()
@@ -54,7 +54,7 @@ def test_remove_from_cart(catalog_page):
     with allure.step('Проверяем, что у иконки корзины появился каунтер'):
         badge = catalog_page.get_badge_count_cart()
         expect(badge).to_be_visible()
-        assert badge.inner_text() == '1'
+        assert_equal_str('1', badge.inner_text())
     with allure.step('Проверяем, что кнопка remove содержит атрибут name'):
         btn_remove = catalog_page.get_btn_remove_from_cart(card)
         expect(btn_remove).to_have_attribute('name', attribute_btn_remove)
@@ -94,9 +94,9 @@ def test_open_detail_product_page_by_click_title(catalog_page, detail_product_pa
         detail_price = detail_product_page.get_price_products().inner_text()
 
     with allure.step('Проверяем одинаковые ли данные на карточке товара и детальной странице'):
-        assert title == detail_title
-        assert price == detail_price
-        assert description == detail_desc
+        assert_equal_str(title, detail_title)
+        assert_equal_str(price, detail_price)
+        assert_equal_str(description, detail_desc)
 
 def test_sort_name_z_to_a(catalog_page):
     catalog_page.open_catalog_page()
@@ -106,7 +106,7 @@ def test_sort_name_z_to_a(catalog_page):
         catalog_page.select_sort('za')
         new_sort_titles = catalog_page.get_list_title_products()
     with allure.step('Проверяем, что выбрано значение z-a в селекте'):
-        assert catalog_page.get_active_select().inner_text() == 'Name (Z to A)'
+        assert_equal_str('Name (Z to A)', catalog_page.get_active_select().inner_text())
     with allure.step('Проверяем, что старая сортировка != новой)'):
         assert old_sort_titles != new_sort_titles
         assert sorted(old_sort_titles, reverse=True) == new_sort_titles
@@ -116,7 +116,7 @@ def test_default_sort_name_a_to_z(catalog_page):
     with allure.step('Получаем список названий карточек'):
         titles = catalog_page.get_list_title_products()
     with allure.step('Проверяем, что по умолчанию выбрано значение a-z в селекте'):
-        assert catalog_page.get_active_select().inner_text() == 'Name (A to Z)'
+        assert_equal_str('Name (A to Z)', catalog_page.get_active_select().inner_text())
     with allure.step('Проверяем, что сортировка по умолчанию a-z)'):
         assert titles == sorted(titles)
 
@@ -127,7 +127,7 @@ def test_sort_price_l_to_h(catalog_page):
     with allure.step('Сортируем список по цене от low до high(по убыванию)'):
         catalog_page.select_sort('lohi')
     with allure.step('Проверяем, что выбрано значение low-high в селекте'):
-        assert catalog_page.get_active_select().inner_text() == 'Price (low to high)'
+        assert_equal_str('Price (low to high)', catalog_page.get_active_select().inner_text())
     with allure.step('Проверяем, что старая сортировка != новой)'):
         new_sort_price = catalog_page.get_price_list_products()
         assert old_sort_price != new_sort_price
@@ -140,7 +140,7 @@ def test_sort_price_h_to_l(catalog_page):
     with allure.step('Сортируем список по цене от high до low(по убыванию)'):
         catalog_page.select_sort('hilo')
     with allure.step('Проверяем, что выбрано значение high-low в селекте'):
-        assert catalog_page.get_active_select().inner_text() == 'Price (high to low)'
+        assert_equal_str('Price (high to low)', catalog_page.get_active_select().inner_text())
     with allure.step('Проверяем, что старая сортировка != новой)'):
         new_sort_price = catalog_page.get_price_list_products()
         assert old_sort_price != new_sort_price
